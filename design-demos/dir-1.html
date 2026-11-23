@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方向 A · 图鉴·数据版心</title>
+<style>
+  :root {
+    --paper: #f5f0e6;        /* 暖纸底 */
+    --paper-deep: #efe8da;   /* 稍深纸 */
+    --ink: #201d17;          /* 近黑墨 */
+    --ink-2: #57503f;        /* 次级墨 */
+    --ink-3: #8a8170;        /* 三级墨 */
+    --rule: #d8cfbc;         /* 细规则线 */
+    --vermilion: #b3382b;    /* 朱砂红 · 只用一处 */
+    --serif: "Songti SC", "Noto Serif SC", "STSong", "SimSun", serif;
+    --sans: -apple-system, "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", sans-serif;
+    --mono: "SF Mono", "Menlo", "JetBrains Mono", "PingFang SC", monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    display: flex; flex-direction: column;
+    width: 1440px; height: 900px; overflow: hidden;
+    background-image: linear-gradient(var(--rule) 1px, transparent 1px);
+    background-size: 100% 1px;
+  }
+
+  /* 顶栏：极简，一根细线 */
+  .masthead {
+    flex: none;
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 26px 48px 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .brand { display: flex; align-items: baseline; gap: 16px; }
+  .brand .logo {
+    font-family: var(--serif); font-weight: 700; font-size: 24px; letter-spacing: 0.02em;
+  }
+  .brand .logo .verm { color: var(--vermilion); }
+  .brand .tagline { font-size: 12.5px; color: var(--ink-3); letter-spacing: 0.05em; }
+  .masthead .meta { display: flex; align-items: center; gap: 22px; font-size: 12px; color: var(--ink-2); }
+  .meta .search { color: var(--ink-3); }
+  .meta .progress b { font-family: var(--serif); color: var(--ink); font-weight: 600; }
+
+  /* 主体：书页三栏，中间版心 */
+  .book {
+    flex: 1; min-height: 0;
+    display: grid; grid-template-columns: 268px 1fr 300px;
+  }
+
+  /* 左：目录（书页旁注栏气质） */
+  .toc {
+    border-right: 1px solid var(--rule);
+    padding: 28px 22px 40px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .toc h2 {
+    font-family: var(--serif); font-size: 13px; font-weight: 600;
+    letter-spacing: 0.18em; color: var(--ink-3);
+    margin-bottom: 18px;
+  }
+  .toc h2 b { color: var(--ink); font-weight: 700; }
+  .toc .group { margin-bottom: 16px; }
+  .toc .group-title {
+    font-family: var(--serif); font-size: 11px; letter-spacing: 0.12em;
+    color: var(--ink-3); margin-bottom: 5px; display: flex; align-items: baseline; gap: 8px;
+  }
+  .toc .group-title .cnt { color: var(--ink-3); font-size: 10px; }
+  .toc .topic {
+    display: flex; align-items: baseline; gap: 10px;
+    padding: 3.5px 0; font-size: 13px; color: var(--ink-2); cursor: default;
+  }
+  .toc .topic .no { font-family: var(--mono); font-size: 10px; color: var(--ink-3); width: 18px; flex: none; }
+  .toc .topic .dots { flex: 1; border-bottom: 1px dotted var(--rule); transform: translateY(-3px); }
+  .toc .topic.active { color: var(--ink); font-weight: 600; }
+  .toc .topic.active .no { color: var(--vermilion); font-weight: 700; }
+  .toc .toc-foot { margin-top: auto; font-size: 11px; color: var(--ink-3); border-top: 1px solid var(--rule); padding-top: 14px; }
+
+  /* 中央：版心 */
+  .main {
+    padding: 30px 44px 40px;
+    display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+  }
+  .crumb { font-size: 11px; letter-spacing: 0.1em; color: var(--ink-3); margin-bottom: 6px; }
+  .crumb b { color: var(--ink-2); font-weight: 500; }
+  .step-title { font-family: var(--serif); font-size: 30px; font-weight: 700; letter-spacing: 0.01em; line-height: 1.15; }
+  .step-sub { font-size: 12px; color: var(--ink-3); letter-spacing: 0.06em; margin-top: 5px; }
+
+  /* 图表：数据墨水比 —— 只有数据，没有框 */
+  .plate {
+    margin-top: 22px; flex: 1; min-height: 0;
+    display: flex; align-items: flex-end;
+    border-bottom: 1px solid var(--ink-2);
+    padding-bottom: 0;
+  }
+  .plate svg { display: block; width: 100%; height: 100%; }
+  .plate .note {
+    position: relative; flex: none; width: 150px; padding: 0 0 10px 18px;
+    font-size: 11px; line-height: 1.8; color: var(--ink-3);
+    border-left: 1px solid var(--rule);
+  }
+  .plate .note b { color: var(--ink-2); font-weight: 600; }
+
+  /* 讲解与代码：上下排 */
+  .body { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; margin-top: 20px; flex: none; }
+  .explain { font-size: 14px; line-height: 1.9; color: var(--ink-2); }
+  .explain p + p { margin-top: 12px; }
+  .explain em { font-family: var(--serif); font-style: normal; color: var(--ink); }
+  .code {
+    background: var(--paper-deep); border: 1px solid var(--rule);
+    border-left: 3px solid var(--vermilion);
+    padding: 14px 18px; font-family: var(--mono); font-size: 11.5px; line-height: 1.8; color: var(--ink-2);
+    white-space: pre;
+  }
+  .code .k { color: var(--vermilion); }       /* 关键字朱砂 */
+  .code .c { color: var(--ink-3); }           /* 注释灰 */
+  .code .s { color: #5c5c30; }                /* 字符串橄榄 */
+
+  /* 右：主题概览 */
+  .aside {
+    border-left: 1px solid var(--rule);
+    padding: 28px 24px 40px; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .aside .chip { font-size: 10px; letter-spacing: 0.14em; color: var(--ink-3); }
+  .aside h3 { font-family: var(--serif); font-size: 22px; font-weight: 700; margin: 8px 0 14px; }
+  .aside p { font-size: 13px; line-height: 1.8; color: var(--ink-2); }
+  .aside dl { margin-top: 18px; font-size: 12.5px; }
+  .aside dt { font-family: var(--serif); font-size: 11px; color: var(--ink-3); letter-spacing: 0.06em; margin-top: 13px; }
+  .aside dd { color: var(--ink-2); margin-top: 3px; line-height: 1.6; }
+  .aside dd .fn { font-family: var(--mono); font-size: 11.5px; color: var(--ink); }
+  .aside .progress { margin-top: auto; border-top: 1px solid var(--rule); padding-top: 16px; }
+  .aside .progress .bar { height: 3px; background: var(--rule); position: relative; margin-top: 8px; }
+  .aside .progress .bar i { position: absolute; inset: 0 auto 0 0; width: 20%; background: var(--ink); }
+  .aside .progress .lbl { font-size: 11px; color: var(--ink-3); display: flex; justify-content: space-between; }
+  .aside .btn {
+    margin-top: 16px; display: block; text-align: center; padding: 11px 0;
+    border: 1px solid var(--ink); font-family: var(--serif); font-size: 13px; font-weight: 600;
+    color: var(--ink); letter-spacing: 0.04em; cursor: default;
+  }
+  .aside .btn:hover { background: var(--ink); color: var(--paper); }
+</style>
+</head>
+<body>
+
+  <header class="masthead">
+    <div class="brand">
+      <span class="logo">数据<span class="verm">探查器</span></span>
+      <span class="tagline">用 Python 读懂数据 · DATA EXPLORER</span>
+    </div>
+    <div class="meta">
+      <span class="search">搜索主题　⌘K</span>
+      <span class="progress">已读 <b>24</b> / 125 步</span>
+      <span>深浅</span>
+    </div>
+  </header>
+
+  <div class="book">
+
+    <!-- 左：目录 -->
+    <nav class="toc">
+      <h2>课程目录 <b>29</b> 章</h2>
+      <div class="group">
+        <div class="group-title">基础 BASICS <span class="cnt">03</span></div>
+        <div class="topic"><span class="no">01</span>起步·环境与第一个程序<span class="dots"></span></div>
+        <div class="topic"><span class="no">02</span>变量与输入输出<span class="dots"></span></div>
+      </div>
+      <div class="group">
+        <div class="group-title">容器 CONTAINER <span class="cnt">04</span></div>
+        <div class="topic"><span class="no">03</span>数字与字符串<span class="dots"></span></div>
+        <div class="topic"><span class="no">04</span>列表<span class="dots"></span></div>
+        <div class="topic"><span class="no">05</span>字典<span class="dots"></span></div>
+      </div>
+      <div class="group">
+        <div class="group-title">流程 FLOW <span class="cnt">03</span></div>
+        <div class="topic"><span class="no">06</span>条件分支<span class="dots"></span></div>
+        <div class="topic"><span class="no">07</span>循环<span class="dots"></span></div>
+      </div>
+      <div class="group">
+        <div class="group-title">NUMPY 数值 <span class="cnt">02</span></div>
+        <div class="topic"><span class="no">11</span>数组与索引<span class="dots"></span></div>
+      </div>
+      <div class="group">
+        <div class="group-title">DATAFRAME 数据框 <span class="cnt">02</span></div>
+        <div class="topic"><span class="no">13</span>DataFrame 初识<span class="dots"></span></div>
+      </div>
+      <div class="group">
+        <div class="group-title">VIZ 可视化 <span class="cnt">01</span></div>
+        <div class="topic active"><span class="no">19</span>Matplotlib 图表<span class="dots"></span></div>
+      </div>
+      <div class="group">
+        <div class="group-title">MODEL 建模 <span class="cnt">04</span></div>
+        <div class="topic"><span class="no">20</span>从数据到模型<span class="dots"></span></div>
+        <div class="topic"><span class="no">21</span>聚类与评估<span class="dots"></span></div>
+      </div>
+      <div class="group">
+        <div class="group-title">CRAWL 采集 <span class="cnt">02</span></div>
+        <div class="topic"><span class="no">26</span>requests 与合规<span class="dots"></span></div>
+      </div>
+      <div class="toc-foot">数据类型与语法示例 · 代码按 Python 3.12 编写</div>
+    </nav>
+
+    <!-- 中央版心 -->
+    <main class="main">
+      <div class="crumb">VIZ 可视化　→　<b>Matplotlib 图表</b>　·　第 4 步 / 10 步</div>
+      <div class="step-title">横向条形图 · barh</div>
+      <div class="step-sub">HORIZONTAL BAR　类别多、名称长时更易读</div>
+
+      <div class="plate">
+        <svg viewBox="0 0 520 300" preserveAspectRatio="xMidYMax meet">
+          <!-- Tufte：只有数据。一条底线，五根墨条，最大值点朱砂 -->
+          <g font-family="var(--mono)" font-size="12" fill="#57503f">
+            <text x="0" y="26" >北京</text>
+            <text x="0" y="84" >上海</text>
+            <text x="0" y="142">广州</text>
+            <text x="0" y="200">深圳</text>
+            <text x="0" y="258">杭州</text>
+          </g>
+          <!-- 底线 -->
+          <line x1="56" y1="288" x2="520" y2="288" stroke="#201d17" stroke-width="1.2"/>
+          <!-- 刻度线 -->
+          <g stroke="#d8cfbc" stroke-width="1">
+            <line x1="56"  y1="288" x2="56"  y2="296"/>
+            <line x1="172" y1="288" x2="172" y2="296"/>
+            <line x1="288" y1="288" x2="288" y2="296"/>
+            <line x1="404" y1="288" x2="404" y2="296"/>
+            <line x1="520" y1="288" x2="520" y2="296"/>
+          </g>
+          <g font-family="var(--mono)" font-size="10.5" fill="#8a8170">
+            <text x="56"  y="312">0</text>
+            <text x="172" y="312">25万</text>
+            <text x="288" y="312">50万</text>
+            <text x="404" y="312">75万</text>
+            <text x="520" y="312" text-anchor="end">100万</text>
+          </g>
+          <!-- 五根墨条 -->
+          <rect x="56" y="14"  width="456" height="26" fill="#b3382b"/>   <!-- 北京 朱砂 -->
+          <rect x="56" y="72"  width="386" height="26" fill="#8a8170"/>   <!-- 上海 -->
+          <rect x="56" y="130" width="310" height="26" fill="#8a8170"/>   <!-- 广州 -->
+          <rect x="56" y="188" width="253" height="26" fill="#8a8170"/>   <!-- 深圳 -->
+          <rect x="56" y="246" width="183" height="26" fill="#8a8170"/>   <!-- 杭州 -->
+          <g font-family="var(--mono)" font-size="11.5" fill="#f5f0e6">
+            <text x="466" y="30"  text-anchor="end">98.6万</text>
+          </g>
+          <text x="504" y="84"  text-anchor="end" fill="#57503f" font-family="var(--mono)" font-size="11">83.6万</text>
+          <text x="360" y="144" text-anchor="end" fill="#57503f" font-family="var(--mono)" font-size="11">67.2万</text>
+        </svg>
+        <div class="note">
+          只保留<b>数据墨水</b>：<br>一根底线、五根条、<br>几个刻度。<br>朱砂只点在最值上。
+        </div>
+      </div>
+
+      <div class="body">
+        <div class="explain">
+          <p>横向条形图适合类别较多、名称较长的情况，阅读顺序更自然。<em>barh</em> 与 <em>bar</em> 参数几乎一样，只是把 x / y 互换，类别标签落在左侧纵轴。</p>
+          <p>这里没有给柱体加边框、没有网格线——图表的每一笔都在表达数据，而不是装饰。</p>
+        </div>
+        <div class="code">import matplotlib.pyplot as plt
+
+cities = ['北京','上海','广州','深圳','杭州']
+sales  = [986420, 836210, 672340,
+          548120, 396420]
+
+plt.barh(cities, sales)
+plt.xlabel('销售额（元）')
+plt.title('各城市销售额')
+plt.tight_layout()
+plt.show()</div>
+      </div>
+    </main>
+
+    <!-- 右：主题概览 -->
+    <aside class="aside">
+      <div class="chip">VIZ · 可视化　10 步</div>
+      <h3>数据可视化</h3>
+      <p>用 Matplotlib 把数据画出来：从坐标系与图型，到标签、样式与导出。</p>
+      <dl>
+        <dt>新概念</dt><dd>从数值到图形的位置映射</dd>
+        <dt>核心函数</dt><dd class="fn">barh · bar · pie · boxplot · savefig</dd>
+        <dt>本步要点</dt><dd>横向柱 · 类别名在左侧</dd>
+      </dl>
+      <div class="progress">
+        <div class="lbl"><span>本主题进度 2 / 10 步</span><span>20%</span></div>
+        <div class="bar"><i></i></div>
+        <a class="btn">导出完整脚本</a>
+      </div>
+    </aside>
+
+  </div>
+</body>
+</html>

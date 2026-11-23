@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方向 B · 实验台·暗夜终端</title>
+<style>
+  :root {
+    --bg: #07080a;
+    --panel: rgba(255,255,255,0.035);
+    --panel-2: rgba(255,255,255,0.06);
+    --line: rgba(255,255,255,0.08);
+    --line-soft: rgba(255,255,255,0.05);
+    --ink: #e7eaee;
+    --ink-2: #a7b0ba;
+    --ink-3: #5d6670;
+    --accent: #5eead4;              /* 荧光青 · 唯一彩色，只标“当前/运行” */
+    --accent-soft: rgba(94,234,212,0.10);
+    --sans: -apple-system, "PingFang SC", "Hiragino Sans GB", "Inter", sans-serif;
+    --mono: "SF Mono", "Menlo", "JetBrains Mono", monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--sans);
+    background:
+      radial-gradient(1200px 600px at 78% -10%, rgba(94,234,212,0.05), transparent 60%),
+      radial-gradient(900px 500px at 10% 110%, rgba(94,114,210,0.06), transparent 55%),
+      var(--bg);
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    width: 1440px; height: 900px; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  /* 顶栏：玻璃，底下一根荧光进度线 */
+  .masthead {
+    flex: none; display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px; border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(14px); background: rgba(7,8,10,0.6);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand .mark {
+    width: 22px; height: 22px; border: 1px solid var(--accent); border-radius: 5px;
+    display: grid; place-items: center; font-family: var(--mono); font-size: 11px; color: var(--accent);
+    box-shadow: 0 0 12px rgba(94,234,212,0.35);
+  }
+  .brand .name { font-weight: 600; font-size: 14px; }
+  .brand .name span { color: var(--ink-3); font-weight: 400; }
+  .masthead .mid { font-size: 12px; color: var(--ink-2); font-family: var(--mono); }
+  .masthead .mid b { color: var(--accent); font-weight: 500; }
+  .masthead .right { display: flex; align-items: center; gap: 18px; font-size: 12px; color: var(--ink-3); font-family: var(--mono); }
+  .masthead .right .pill { padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; }
+  .masthead .right .live { color: var(--accent); display: flex; align-items: center; gap: 6px; }
+  .masthead .right .live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+  .shell { flex: 1; min-height: 0; display: grid; grid-template-columns: 240px 1fr 300px; gap: 14px; padding: 14px; }
+
+  /* 左：主题目录（玻璃条） */
+  .toc {
+    border: 1px solid var(--line); border-radius: 12px; background: var(--panel);
+    padding: 18px 16px; overflow: hidden; display: flex; flex-direction: column;
+  }
+  .toc h2 { font-size: 11px; letter-spacing: 0.14em; color: var(--ink-3); text-transform: uppercase; margin-bottom: 14px; }
+  .toc .group { margin-bottom: 12px; }
+  .toc .gt { font-size: 9.5px; letter-spacing: 0.1em; color: var(--ink-3); margin-bottom: 4px; text-transform: uppercase; }
+  .toc .topic { font-size: 12.5px; color: var(--ink-2); padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; gap: 8px; }
+  .toc .topic .no { font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); width: 16px; }
+  .toc .topic.active { color: var(--ink); background: var(--accent-soft); }
+  .toc .topic.active .no { color: var(--accent); }
+  .toc .topic.active::after { content: "●"; color: var(--accent); font-size: 7px; margin-left: auto; }
+  .toc .foot { margin-top: auto; font-size: 10.5px; color: var(--ink-3); font-family: var(--mono); border-top: 1px solid var(--line-soft); padding-top: 12px; }
+
+  /* 中央 */
+  .main { min-width: 0; display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+  .stage {
+    flex: 1; min-height: 0; border: 1px solid var(--line); border-radius: 12px;
+    background: var(--panel); padding: 20px 24px; display: flex; flex-direction: column;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.01), 0 0 40px rgba(94,234,212,0.04);
+  }
+  .stage .head { display: flex; align-items: center; justify-content: space-between; }
+  .stage .head .t { font-size: 12px; color: var(--ink-2); font-family: var(--mono); }
+  .stage .head .t b { color: var(--ink); font-weight: 500; }
+  .stage .head .ops { display: flex; gap: 8px; }
+  .stage .head .ops span { width: 26px; height: 26px; border: 1px solid var(--line); border-radius: 7px; display: grid; place-items: center; color: var(--ink-3); font-family: var(--mono); font-size: 12px; }
+  .stage .head .run { display: flex; align-items: center; gap: 7px; padding: 5px 13px; border-radius: 7px; background: var(--accent); color: #05201c; font-weight: 600; font-size: 12px; font-family: var(--mono); }
+  .stage .viz { flex: 1; min-height: 0; display: grid; place-items: center; }
+  .stage .viz svg { display: block; width: 100%; max-height: 100%; }
+  .stage .foot { font-size: 10.5px; color: var(--ink-3); font-family: var(--mono); border-top: 1px solid var(--line-soft); padding-top: 10px; }
+
+  .bottom { flex: none; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .card { border: 1px solid var(--line); border-radius: 12px; background: var(--panel); padding: 16px 18px; }
+  .card .label { font-size: 10px; letter-spacing: 0.12em; color: var(--ink-3); text-transform: uppercase; margin-bottom: 8px; }
+  .card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .card p { font-size: 13px; line-height: 1.75; color: var(--ink-2); }
+  .card p em { color: var(--ink); font-style: normal; font-family: var(--mono); font-size: 12px; }
+  .code {
+    font-family: var(--mono); font-size: 11.5px; line-height: 1.7; color: var(--ink-2);
+    background: rgba(0,0,0,0.3); border-radius: 8px; padding: 14px 16px; overflow: hidden;
+  }
+  .code .k { color: #c792ea; } .code .s { color: #a3e635; } .code .f { color: var(--accent); } .code .c { color: var(--ink-3); }
+
+  /* 右 */
+  .aside {
+    border: 1px solid var(--line); border-radius: 12px; background: var(--panel);
+    padding: 18px; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .aside .chip { font-size: 10px; letter-spacing: 0.1em; color: var(--ink-3); text-transform: uppercase; }
+  .aside h3 { font-size: 19px; font-weight: 600; margin: 8px 0 10px; }
+  .aside > p { font-size: 12.5px; line-height: 1.7; color: var(--ink-2); }
+  .aside dl { margin-top: 14px; font-size: 12px; }
+  .aside dt { font-size: 10px; color: var(--ink-3); letter-spacing: 0.08em; margin-top: 12px; text-transform: uppercase; }
+  .aside dd { color: var(--ink-2); margin-top: 3px; line-height: 1.6; }
+  .aside dd .fn { font-family: var(--mono); font-size: 11px; color: var(--ink); }
+  .aside .prog { margin-top: auto; border-top: 1px solid var(--line-soft); padding-top: 14px; }
+  .aside .prog .lbl { font-size: 10.5px; color: var(--ink-3); display: flex; justify-content: space-between; font-family: var(--mono); }
+  .aside .prog .bar { height: 4px; background: var(--line); border-radius: 2px; margin: 8px 0 14px; overflow: hidden; }
+  .aside .prog .bar i { display: block; width: 20%; height: 100%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+  .aside .btn {
+    display: block; text-align: center; padding: 10px 0; border-radius: 8px;
+    border: 1px solid var(--line); color: var(--ink); font-size: 12.5px; font-weight: 500;
+  }
+  .aside .btn:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+  <header class="masthead">
+    <div class="brand">
+      <div class="mark">◈</div>
+      <div class="name">数据探查器 <span>Data Explorer</span></div>
+    </div>
+    <div class="mid">正在学习 · <b>数据可视化</b>　step 04 / 10</div>
+    <div class="right">
+      <span class="live">RUNNING</span>
+      <span class="pill">⌘K 搜索</span>
+      <span>24 / 125 步</span>
+    </div>
+  </header>
+
+  <div class="shell">
+
+    <nav class="toc">
+      <h2>课程目录 · 29 章</h2>
+      <div class="group"><div class="gt">基础 BASICS</div>
+        <div class="topic"><span class="no">01</span>起步与环境</div>
+        <div class="topic"><span class="no">02</span>变量与输入输出</div></div>
+      <div class="group"><div class="gt">容器 CONTAINER</div>
+        <div class="topic"><span class="no">03</span>数字与字符串</div>
+        <div class="topic"><span class="no">04</span>列表</div>
+        <div class="topic"><span class="no">05</span>字典</div></div>
+      <div class="group"><div class="gt">流程 FLOW</div>
+        <div class="topic"><span class="no">06</span>条件分支</div>
+        <div class="topic"><span class="no">07</span>循环</div></div>
+      <div class="group"><div class="gt">NUMPY 数值</div>
+        <div class="topic"><span class="no">11</span>数组与索引</div></div>
+      <div class="group"><div class="gt">VIZ 可视化</div>
+        <div class="topic active"><span class="no">19</span>Matplotlib 图表</div></div>
+      <div class="group"><div class="gt">MODEL 建模</div>
+        <div class="topic"><span class="no">20</span>从数据到模型</div>
+        <div class="topic"><span class="no">21</span>聚类与评估</div></div>
+      <div class="foot">Python 3.12 · matplotlib 3.11 · 全部可运行</div>
+    </nav>
+
+    <main class="main">
+      <section class="stage">
+        <div class="head">
+          <span class="t">viz.py · <b>barh 横向条形图</b></span>
+          <span class="ops">
+            <span>↺</span><span>⤢</span>
+            <span class="run">▶ 运行</span>
+          </span>
+        </div>
+        <div class="viz">
+          <svg viewBox="0 0 560 300">
+            <g stroke="rgba(255,255,255,0.05)" stroke-width="1">
+              <line x1="96" y1="30" x2="96" y2="270"/><line x1="212" y1="30" x2="212" y2="270"/>
+              <line x1="328" y1="30" x2="328" y2="270"/><line x1="444" y1="30" x2="444" y2="270"/>
+            </g>
+            <g font-family="var(--mono)" font-size="12" fill="#5d6670">
+              <text x="0" y="52">北京</text><text x="0" y="106">上海</text><text x="0" y="160">广州</text>
+              <text x="0" y="214">深圳</text><text x="0" y="268">杭州</text>
+            </g>
+            <rect x="96" y="32"  width="456" height="26" rx="4" fill="#5eead4" opacity="0.95"/>
+            <rect x="96" y="86"  width="386" height="26" rx="4" fill="#2a323b"/>
+            <rect x="96" y="140" width="310" height="26" rx="4" fill="#2a323b"/>
+            <rect x="96" y="194" width="253" height="26" rx="4" fill="#2a323b"/>
+            <rect x="96" y="248" width="183" height="26" rx="4" fill="#2a323b"/>
+            <text x="548" y="50" text-anchor="end" font-family="var(--mono)" font-size="11.5" font-weight="600" fill="#04211b">98.6万</text>
+            <g font-family="var(--mono)" font-size="11.5" fill="#a7b0ba">
+              <text x="482" y="103" text-anchor="end">83.6万</text>
+              <text x="406" y="157" text-anchor="end">67.2万</text>
+              <text x="345" y="211" text-anchor="end">54.8万</text>
+              <text x="275" y="265" text-anchor="end">39.6万</text>
+            </g>
+            <line x1="96" y1="286" x2="552" y2="286" stroke="rgba(255,255,255,0.14)"/>
+          </svg>
+        </div>
+        <div class="foot">EOF · 输出 5 行 · 荧光只标记最值，其余退到灰</div>
+      </section>
+
+      <div class="bottom">
+        <div class="card">
+          <div class="label">讲解</div>
+          <h3>横向条形图</h3>
+          <p>类别多、名称长时，横向更易读。<em>barh</em> 与 <em>bar</em> 参数几乎一样，只是把 x / y 互换，类别落在左侧。</p>
+        </div>
+        <div class="card" style="padding-bottom:8px">
+          <div class="label">step 04 · viz.py</div>
+          <div class="code"><span class="c"># 各城市销售额</span>
+cities = ['北京','上海','广州','深圳','杭州']
+sales = [986420, 836210, 672340, 548120, 396420]
+
+plt.<span class="f">barh</span>(cities, sales)
+plt.<span class="f">xlabel</span>(<span class="s">'销售额（元）'</span>)
+plt.<span class="f">title</span>(<span class="s">'各城市销售额'</span>)</div>
+        </div>
+      </div>
+    </main>
+
+    <aside class="aside">
+      <div class="chip">VIZ · 可视化 · 10 步</div>
+      <h3>数据可视化</h3>
+      <p>用 Matplotlib 把数据画出来：坐标系、图型、标签、样式与导出。</p>
+      <dl>
+        <dt>新概念</dt><dd>数值 → 图形的位置映射</dd>
+        <dt>核心函数</dt><dd class="fn">barh · bar · pie · boxplot · savefig</dd>
+        <dt>本步要点</dt><dd>横向柱 · 类别名在左侧</dd>
+      </dl>
+      <div class="prog">
+        <div class="lbl"><span>本主题进度 2 / 10</span><span>20%</span></div>
+        <div class="bar"><i></i></div>
+        <a class="btn">导出完整脚本</a>
+      </div>
+    </aside>
+
+  </div>
+</body>
+</html>

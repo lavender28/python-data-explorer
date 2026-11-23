@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方向 D · 书页撞色（A 版心 × C 撞色）</title>
+<style>
+  :root {
+    --paper: #f4eee1;        /* 暖纸底（A） */
+    --paper-deep: #ece4d0;
+    --ink: #15120c;          /* 墨黑 */
+    --ink-2: #4a4436;
+    --ink-3: #8a8070;
+    --rule: #d8cdb4;         /* 细规则线（点线目录） */
+    --seal: #b3382b;         /* 朱砂 · 只做“读点/印” */
+    /* 撞色结构色（C） */
+    --purple: #5b3df5; --pink: #e1306c; --yellow: #f5c518;
+    --cyan: #00b8a3;  --orange: #ff6b35; --blue: #2a6df4; --green: #2ecc40;
+    --serif: "Songti SC", "Noto Serif SC", "STSong", "SimSun", serif;
+    --sans: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif;
+    --mono: "SF Mono", "Menlo", "JetBrains Mono", monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    width: 1440px; height: 900px; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  /* ── 顶栏：天头小 · 一根粗黑线 ── */
+  .masthead {
+    flex: none; display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 28px 13px; border-bottom: 3px solid var(--ink);
+    background: var(--paper-deep);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand .seal {
+    width: 30px; height: 30px; background: var(--seal); color: #f4eee1;
+    display: grid; place-items: center; font-family: var(--serif); font-weight: 700; font-size: 18px;
+    border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink);
+  }
+  .brand .logo { font-family: var(--serif); font-weight: 700; font-size: 22px; letter-spacing: 0.02em; }
+  .brand .tagline { font-size: 12px; color: var(--ink-3); letter-spacing: 0.04em; }
+  .masthead .right { display: flex; align-items: center; gap: 12px; }
+  .masthead .pill {
+    font-size: 12px; font-weight: 700; padding: 5px 12px;
+    border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); background: #fff;
+  }
+  .masthead .pill.cyan { background: var(--cyan); }
+
+  /* ── 主体：书页三栏 ── */
+  .book { flex: 1; min-height: 0; display: grid; grid-template-columns: 250px 1fr 286px; gap: 20px; padding: 20px 24px 0; }
+
+  /* 左：目录（点线引导 + 撞色分类块） */
+  .toc { min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+  .toc h2 { font-family: var(--serif); font-size: 13px; font-weight: 600; letter-spacing: 0.12em; color: var(--ink-3); display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .toc h2 .badge { background: var(--pink); color: #fff; border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); font-size: 10.5px; padding: 0 7px; }
+  .toc .scroll { display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+  .toc .group { border: 2px solid var(--ink); background: #fffdf6; box-shadow: 3px 3px 0 var(--ink); padding: 7px 10px 8px; }
+  .toc .gt { font-size: 9.5px; font-weight: 800; letter-spacing: 0.08em; color: var(--ink-2); margin-bottom: 3px; display: flex; align-items: center; gap: 6px; }
+  .toc .gt .chip { color: #fff; padding: 0 6px; border: 1.5px solid var(--ink); font-size: 9.5px; }
+  .toc .topic { display: flex; align-items: baseline; gap: 8px; font-size: 12.5px; color: var(--ink-2); padding: 2px 0; }
+  .toc .topic .no { font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); }
+  .toc .topic .dots { flex: 1; border-bottom: 1px dotted var(--rule); transform: translateY(-3px); }
+  .toc .group.active { background: var(--purple); color: #fff; box-shadow: 5px 5px 0 var(--ink); }
+  .toc .group.active .gt { color: #fff; }
+  .toc .group.active .gt .chip { background: var(--yellow); color: var(--ink); }
+  .toc .group.active .topic { color: #fff; font-weight: 600; }
+  .toc .group.active .topic .no { color: #fff; opacity: 0.85; }
+  .toc .foot { margin-top: auto; font-size: 10.5px; color: var(--ink-3); font-family: var(--mono); padding-top: 10px; border-top: 1px solid var(--rule); }
+
+  /* 中央：版心（天头小地脚大） */
+  .main { min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+  .crumb { font-size: 11px; letter-spacing: 0.06em; color: var(--ink-3); margin-bottom: 4px; }
+  .crumb b { color: var(--ink-2); font-weight: 600; }
+  .title-row { display: flex; align-items: baseline; gap: 14px; }
+  .title-row h1 { font-family: var(--serif); font-size: 30px; font-weight: 700; letter-spacing: 0.01em; line-height: 1.1; }
+  .title-row h1 .fn { font-family: var(--mono); font-size: 26px; color: var(--purple); background: var(--yellow); border: 2px solid var(--ink); padding: 0 8px; }
+  .title-row .sub { font-size: 11px; letter-spacing: 0.12em; color: var(--ink-3); }
+
+  /* 画布：柱体靠上（天头小），右侧旁注栏（朱印） */
+  .plate {
+    flex: 1; min-height: 0; margin-top: 12px; display: flex; gap: 0;
+    border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); background: #fffdf6;
+  }
+  .plate .viz { flex: 1; min-width: 0; padding: 14px 6px 0 18px; display: flex; align-items: flex-start; }
+  .plate .viz svg { display: block; width: 100%; }
+  .plate .margin {
+    flex: none; width: 128px; border-left: 3px solid var(--ink); background: var(--paper-deep);
+    padding: 16px 14px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .plate .margin .note-seal {
+    width: 26px; height: 26px; background: var(--seal); color: #f4eee1; border: 2px solid var(--ink);
+    display: grid; place-items: center; font-family: var(--serif); font-size: 14px; font-weight: 700;
+  }
+  .plate .margin p { font-size: 11px; line-height: 1.9; color: var(--ink-2); }
+  .plate .margin p b { font-family: var(--serif); color: var(--ink); }
+  .plate .margin .tiny { margin-top: auto; font-size: 9.5px; letter-spacing: 0.04em; color: var(--ink-3); font-family: var(--mono); border-top: 1px solid var(--rule); padding-top: 8px; }
+
+  /* 步骤卡：粗描边 */
+  .step { flex: none; display: grid; grid-template-columns: 1fr 1.05fr; gap: 16px; margin-top: 16px; }
+  .card { border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); background: #fffdf6; padding: 12px 16px; }
+  .card .label { font-size: 9.5px; font-weight: 800; letter-spacing: 0.12em; color: var(--ink-3); margin-bottom: 5px; }
+  .card h3 { font-family: var(--serif); font-size: 15px; font-weight: 700; margin-bottom: 5px; }
+  .card p { font-size: 13px; line-height: 1.7; color: var(--ink-2); }
+  .card p em { font-style: normal; font-family: var(--mono); font-size: 12px; background: var(--yellow); padding: 0 4px; border: 1.5px solid var(--ink); }
+  .code { font-family: var(--mono); font-size: 11px; line-height: 1.7; color: var(--ink-2); white-space: pre; }
+  .code .k { color: var(--pink); font-weight: 700; } .code .f { color: var(--blue); font-weight: 700; } .code .s { color: #0a6b2f; } .code .c { color: var(--ink-3); }
+
+  /* 右：概览 */
+  .aside { background: #fffdf6; border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); padding: 16px; display: flex; flex-direction: column; overflow: hidden; }
+  .aside .chip { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 0.08em; background: var(--cyan); color: #fff; border: 2px solid var(--ink); padding: 2px 8px; }
+  .aside h3 { font-family: var(--serif); font-size: 20px; font-weight: 700; margin: 10px 0 8px; }
+  .aside > p { font-size: 12.5px; line-height: 1.7; color: var(--ink-2); }
+  .aside dl { margin-top: 12px; font-size: 12px; }
+  .aside dt { font-size: 9.5px; font-weight: 800; letter-spacing: 0.06em; color: var(--ink-3); margin-top: 11px; }
+  .aside dd { font-weight: 600; margin-top: 3px; line-height: 1.55; }
+  .aside dd .fn { font-family: var(--mono); font-size: 11px; }
+  .aside .prog { margin-top: auto; border-top: 3px solid var(--ink); padding-top: 12px; }
+  .aside .prog .lbl { font-size: 11px; font-weight: 800; display: flex; justify-content: space-between; }
+  .aside .prog .bar { height: 14px; border: 2px solid var(--ink); background: #fff; margin: 8px 0 12px; }
+  .aside .prog .bar i { display: block; width: 20%; height: 100%; background: var(--purple); }
+  .aside .btn { display: block; text-align: center; padding: 11px 0; background: var(--yellow); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); font-weight: 800; font-size: 13px; }
+  .aside .check { margin-bottom: 14px; border: 2px solid var(--ink); background: var(--paper-deep); padding: 8px 10px; }
+  .aside .check .cl { font-size: 9.5px; font-weight: 800; letter-spacing: 0.08em; color: var(--seal); margin-bottom: 3px; }
+  .aside .check .ct { font-size: 12px; font-weight: 600; line-height: 1.5; }
+  .aside .steps { margin-top: 16px; }
+  .aside .steps .sl { font-size: 9.5px; font-weight: 800; letter-spacing: 0.08em; color: var(--ink-3); margin-bottom: 8px; }
+  .aside .steps .sg { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .aside .steps .sg span {
+    height: 26px; border: 2px solid var(--ink); display: grid; place-items: center;
+    font-family: var(--mono); font-size: 10px; font-weight: 700; background: #fffdf6; color: var(--ink-2);
+  }
+  .aside .steps .sg span.done { background: var(--green); color: #fff; }
+  .aside .steps .sg span.cur { background: var(--purple); color: #fff; box-shadow: 2px 2px 0 var(--ink); }
+
+  /* ── 地脚：大 · 撞色书口 ── */
+  .colophon {
+    flex: none; margin: 18px 24px 0; padding: 12px 4px 0;
+    border-top: 3px solid var(--ink); display: flex; align-items: flex-end; justify-content: space-between;
+  }
+  .colophon .fn { font-size: 10.5px; color: var(--ink-3); font-family: var(--mono); padding-bottom: 8px; }
+  .colophon .page { font-family: var(--serif); font-size: 13px; color: var(--ink-2); letter-spacing: 0.15em; padding-bottom: 8px; }
+  .fore-edge { height: 10px; margin: 0 -24px; display: flex; }
+  .fore-edge i { flex: 1; }
+</style>
+</head>
+<body>
+
+  <header class="masthead">
+    <div class="brand">
+      <span class="seal">数</span>
+      <span class="logo">数据探查器</span>
+      <span class="tagline">用 Python 读懂数据</span>
+    </div>
+    <div class="right">
+      <span class="pill cyan">⌘K 搜索主题</span>
+      <span class="pill">已读 24 / 125 步</span>
+    </div>
+  </header>
+
+  <div class="book">
+
+    <!-- 左：目录 -->
+    <nav class="toc">
+      <h2>课程目录 <span class="badge">29 章</span></h2>
+      <div class="scroll">
+        <div class="group">
+          <div class="gt"><span class="chip" style="background:var(--cyan)">基础</span> BASICS</div>
+          <div class="topic"><span class="no">01</span>起步与环境<span class="dots"></span></div>
+          <div class="topic"><span class="no">02</span>变量与输入输出<span class="dots"></span></div>
+        </div>
+        <div class="group">
+          <div class="gt"><span class="chip" style="background:var(--orange)">容器</span> CONTAINER</div>
+          <div class="topic"><span class="no">03</span>数字与字符串<span class="dots"></span></div>
+          <div class="topic"><span class="no">04</span>列表<span class="dots"></span></div>
+          <div class="topic"><span class="no">05</span>字典<span class="dots"></span></div>
+        </div>
+        <div class="group">
+          <div class="gt"><span class="chip" style="background:var(--yellow)">流程</span> FLOW</div>
+          <div class="topic"><span class="no">06</span>条件分支<span class="dots"></span></div>
+          <div class="topic"><span class="no">07</span>循环<span class="dots"></span></div>
+        </div>
+        <div class="group">
+          <div class="gt"><span class="chip" style="background:var(--pink)">数值</span> NUMPY</div>
+          <div class="topic"><span class="no">11</span>数组与索引<span class="dots"></span></div>
+        </div>
+        <div class="group active">
+          <div class="gt"><span class="chip">可视化</span> VIZ</div>
+          <div class="topic"><span class="no">19</span>Matplotlib 图表<span class="dots"></span></div>
+        </div>
+        <div class="group">
+          <div class="gt"><span class="chip" style="background:var(--blue)">建模</span> MODEL</div>
+          <div class="topic"><span class="no">20</span>从数据到模型<span class="dots"></span></div>
+          <div class="topic"><span class="no">21</span>聚类与评估<span class="dots"></span></div>
+        </div>
+      </div>
+      <div class="foot">Python 3.12 · matplotlib 3.11</div>
+    </nav>
+
+    <!-- 中央版心 -->
+    <main class="main">
+      <div class="crumb">VIZ 可视化　→　<b>Matplotlib 图表</b>　·　第 4 步 / 10 步</div>
+      <div class="title-row">
+        <h1>横向条形图 · <span class="fn">barh</span></h1>
+        <span class="sub">HORIZONTAL BAR</span>
+      </div>
+
+      <div class="plate">
+        <div class="viz">
+          <svg viewBox="0 0 540 300">
+            <g font-family="var(--serif)" font-weight="700" font-size="13.5" fill="#15120c">
+              <text x="0" y="40">北京</text><text x="0" y="92">上海</text><text x="0" y="144">广州</text>
+              <text x="0" y="196">深圳</text><text x="0" y="248">杭州</text>
+            </g>
+            <!-- 硬投影 + 撞色柱（粗描边） -->
+            <g>
+              <rect x="100" y="24"  width="440" height="26" fill="#15120c"/>
+              <rect x="96"  y="20"  width="440" height="26" fill="#5b3df5" stroke="#15120c" stroke-width="2.5"/>
+              <rect x="100" y="76"  width="372" height="26" fill="#15120c"/>
+              <rect x="96"  y="72"  width="372" height="26" fill="#f5c518" stroke="#15120c" stroke-width="2.5"/>
+              <rect x="100" y="128" width="298" height="26" fill="#15120c"/>
+              <rect x="96"  y="124" width="298" height="26" fill="#00b8a3" stroke="#15120c" stroke-width="2.5"/>
+              <rect x="100" y="180" width="242" height="26" fill="#15120c"/>
+              <rect x="96"  y="176" width="242" height="26" fill="#ff6b35" stroke="#15120c" stroke-width="2.5"/>
+              <rect x="100" y="232" width="174" height="26" fill="#15120c"/>
+              <rect x="96"  y="228" width="174" height="26" fill="#e1306c" stroke="#15120c" stroke-width="2.5"/>
+            </g>
+            <g font-family="var(--mono)" font-size="11.5" font-weight="700" fill="#15120c">
+              <text x="536" y="38" text-anchor="end">98.6万</text>
+              <text x="468" y="90" text-anchor="end">83.6万</text>
+              <text x="394" y="142" text-anchor="end">67.2万</text>
+              <text x="338" y="194" text-anchor="end">54.8万</text>
+              <text x="270" y="246" text-anchor="end">39.6万</text>
+            </g>
+            <!-- 底轴刻度（Tufte 克制：细灰，不加框） -->
+            <line x1="96" y1="262" x2="536" y2="262" stroke="#15120c" stroke-width="1.2"/>
+            <g stroke="#d8cdb4" stroke-width="1">
+              <line x1="96" y1="262" x2="96" y2="269"/><line x1="206" y1="262" x2="206" y2="269"/>
+              <line x1="316" y1="262" x2="316" y2="269"/><line x1="426" y1="262" x2="426" y2="269"/>
+              <line x1="536" y1="262" x2="536" y2="269"/>
+            </g>
+            <g font-family="var(--mono)" font-size="10" fill="#8a8070">
+              <text x="96" y="283">0</text>
+              <text x="206" y="283" text-anchor="middle">25万</text>
+              <text x="316" y="283" text-anchor="middle">50万</text>
+              <text x="426" y="283" text-anchor="middle">75万</text>
+              <text x="536" y="283" text-anchor="end">100万</text>
+            </g>
+          </svg>
+        </div>
+        <aside class="margin">
+          <span class="note-seal">注</span>
+          <p>只留<b>数据墨水</b>：一根底线、五根柱、几个刻度。撞色只标柱体，不做满屏装饰。</p>
+          <p class="tiny">数据墨水比 · E. Tufte</p>
+        </aside>
+      </div>
+
+      <div class="step">
+        <div class="card">
+          <div class="label">讲解</div>
+          <h3>横向条形图</h3>
+          <p>类别多、名称长时更易读。<em>barh</em> 与 <em>bar</em> 参数几乎一样，把 x / y 互换即可，类别名落在左侧。</p>
+        </div>
+        <div class="card">
+          <div class="label">step 04 · viz.py</div>
+          <div class="code"><span class="c"># 各城市销售额</span>
+<span class="k">import</span> matplotlib.pyplot <span class="k">as</span> plt
+
+cities = ['北京','上海','广州','深圳','杭州']
+sales  = [986420, 836210, 672340,
+          548120, 396420]
+
+plt.<span class="f">barh</span>(cities, sales)
+plt.<span class="f">xlabel</span>(<span class="s">'销售额（元）'</span>)
+plt.<span class="f">show</span>()</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 右：概览 -->
+    <aside class="aside">
+      <span class="chip">VIZ · 可视化 · 10 步</span>
+      <h3>数据可视化</h3>
+      <p>用 Matplotlib 把数据画出来：坐标系、图型、标签、样式与导出。</p>
+      <dl>
+        <dt>新概念</dt><dd>数值 → 图形的位置映射</dd>
+        <dt>核心函数</dt><dd class="fn">barh · bar · pie · boxplot</dd>
+        <dt>本步要点</dt><dd>横向柱 · 类别名在左侧</dd>
+      </dl>
+      <div class="steps">
+        <div class="sl">本主题 10 步</div>
+        <div class="sg">
+          <span class="done">01</span><span class="done">02</span><span class="done">03</span><span class="cur">04</span><span>05</span>
+          <span>06</span><span>07</span><span>08</span><span>09</span><span>10</span>
+        </div>
+      </div>
+      <div class="prog">
+        <div class="check">
+          <div class="cl">检查点</div>
+          <div class="ct">能说出 bar 与 barh 的差别吗？</div>
+        </div>
+        <div class="lbl"><span>本主题进度 2 / 10 步</span><span>20%</span></div>
+        <div class="bar"><i></i></div>
+        <a class="btn">导出完整脚本 ↗</a>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- 地脚 + 撞色书口 -->
+  <footer class="colophon">
+    <span class="fn">数据类型与语法示例 · 代码按 Python 3.12 编写</span>
+    <span class="page">— 19 · 可视化 —</span>
+  </footer>
+  <div class="fore-edge">
+    <i style="background:var(--purple)"></i><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i>
+    <i style="background:var(--cyan)"></i><i style="background:var(--orange)"></i><i style="background:var(--blue)"></i>
+    <i style="background:var(--green)"></i>
+  </div>
+</body>
+</html>
