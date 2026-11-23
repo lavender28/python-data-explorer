@@ -1,5 +1,9 @@
 # Data Explorer · 用 Python 读懂数据
 
+[![Deploy to GitHub Pages](https://github.com/lavender28/python-data-explorer/actions/workflows/deploy.yml/badge.svg)](https://github.com/lavender28/python-data-explorer/actions/workflows/deploy.yml)
+
+**在线预览：<https://lavender28.github.io/python-data-explorer/>**
+
 一个交互式的 Python 数据分析学习图谱。把数据分析拆成 29 条真实工作流、125 个可执行步骤，每一步同时展示 **代码 / 数据快照 / 操作轨迹**，并且每一步的代码输出都与真实 `python3` 运行结果逐行核对过。
 
 > 设计语言：书页式版心（三栏、天头小地脚大、旁注栏、点线目录）+ 撞色结构色（粗描边、硬投影、分类撞色）。
