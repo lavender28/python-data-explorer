@@ -17,10 +17,17 @@ interface Ctx {
 }
 
 function palette() {
-  const dark = document.documentElement.getAttribute('data-theme') === 'dark'
-  return dark
-    ? { face: '#16304f', hot: '#3f6fd8', edge: '#5d86c4', accent: '#7ba1ff', ink: '#dbe6ff', bg: '#0b1526' }
-    : { face: '#dce7fb', hot: '#1a4cd6', edge: '#7d9ad4', accent: '#1a4cd6', ink: '#13306f', bg: '#ffffff' }
+  // 跟随 CSS 变量，换配色时 3D 场景一起变，不再写死蓝色
+  const cs = getComputedStyle(document.documentElement)
+  const v = (name: string, fallback: string) => cs.getPropertyValue(name).trim() || fallback
+  return {
+    face: v('--logo-face', '#dce7fb'),
+    hot: v('--accent', '#1a4cd6'),
+    edge: v('--flow-arrow', '#7d9ad4'),
+    accent: v('--accent', '#1a4cd6'),
+    ink: v('--ink', '#13306f'),
+    bg: v('--panel', '#ffffff'),
+  }
 }
 
 function makeLabel(THREE: ThreeNS, text: string, color: string, overlay = false, halo?: string) {

@@ -744,50 +744,29 @@ kbd {
 }
 
 .chip-blue {
-  color: #1a4cd6;
-  background: #e9efff;
-  border-color: #c9d8ff;
+  color: var(--tone-key);
+  background: var(--tone-key-soft);
+  border-color: color-mix(in srgb, currentColor 26%, transparent);
 }
 .chip-teal {
-  color: #0a7d70;
-  background: #e4f6f2;
-  border-color: #bfe8e0;
+  color: var(--tone-teal);
+  background: var(--tone-teal-soft);
+  border-color: color-mix(in srgb, currentColor 26%, transparent);
 }
 .chip-amber {
-  color: #96610a;
-  background: #fdf2df;
-  border-color: #f2ddb6;
+  color: var(--tone-warn);
+  background: var(--tone-warn-soft);
+  border-color: color-mix(in srgb, currentColor 26%, transparent);
 }
 .chip-violet {
-  color: #6a3fb5;
-  background: #f2ecff;
-  border-color: #ddcdf8;
+  color: var(--tone-violet);
+  background: var(--tone-violet-soft);
+  border-color: color-mix(in srgb, currentColor 26%, transparent);
 }
 .chip-ghost {
   color: var(--muted);
   background: var(--panel-soft);
   border-color: var(--line);
-}
-
-[data-theme='dark'] .chip-blue {
-  color: #9db8ff;
-  background: #152449;
-  border-color: #263d6d;
-}
-[data-theme='dark'] .chip-teal {
-  color: #55d8c6;
-  background: #0c2a27;
-  border-color: #1c4843;
-}
-[data-theme='dark'] .chip-amber {
-  color: #e6b567;
-  background: #2a2113;
-  border-color: #4a3a1e;
-}
-[data-theme='dark'] .chip-violet {
-  color: #b79aee;
-  background: #221a3a;
-  border-color: #382c58;
 }
 
 .step-list {
@@ -4372,4 +4351,479 @@ kbd {
   padding: 1px 6px;
   border: 1px solid var(--line);
   flex: none;
+}
+
+/* ============================================================
+   舒适层：阅读字体 / 圆角 / 柔和光影 / 背景微光
+   （与配色无关的通用改进）
+   ============================================================ */
+
+:root {
+  /* 正文用无衬线阅读字体：中文字形比等宽字体更适合长段落 */
+  --font-read: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Segoe UI', sans-serif;
+  --radius-card: 12px;
+  --radius-ctl: 8px;
+  --bg-glow: none;
+}
+
+.step-prose p,
+.tip p,
+.ov-desc,
+.sidebar-foot p,
+.md-note,
+.tb-caption,
+.tb-foot,
+.sc-caption {
+  font-family: var(--font-read);
+}
+
+.step-prose p {
+  font-size: 13.5px;
+  line-height: 2.05;
+  letter-spacing: 0.008em;
+}
+
+.step-prose p + p {
+  margin-top: 12px;
+}
+
+.tip p {
+  font-size: 12.5px;
+  line-height: 1.95;
+}
+
+.ov-desc {
+  font-size: 12.5px;
+  line-height: 1.95;
+}
+
+/* 卡片：圆角 + 更柔的阴影，去掉“硬纸板”感 */
+.canvas-card,
+.step-card {
+  border-radius: var(--radius-card);
+}
+
+.canvas-card {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px -12px rgba(0, 0, 0, 0.12);
+}
+
+.step-card {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 10px 30px -18px rgba(0, 0, 0, 0.16);
+}
+
+.btn,
+.search-trigger,
+.step-item,
+.chip,
+.snap,
+.tb-shape,
+.tb-op {
+  border-radius: var(--radius-ctl);
+}
+
+.btn {
+  border-radius: var(--radius-ctl);
+}
+
+/* 背景微光：整页不再是压平的纯色，而有一层极淡的光晕过渡 */
+.app-shell {
+  background-color: var(--bg);
+  background-image: var(--bg-glow);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* ============================================================
+   配色候选 A / B / C（临时：选定后合并进主变量并删除本段）
+   ============================================================ */
+
+/* ---------- A 宣纸·墨绿（暖纸阅读 / 白天久看不累） ---------- */
+
+html[data-palette='a'] {
+  --bg: #f5f2e9;
+  --panel: #fdfbf5;
+  --panel-soft: #f8f5ec;
+  --panel-tint: #f0ebdf;
+  --ink: #24231e;
+  --ink-soft: #4b4840;
+  --muted: #7d786c;
+  --faint: #a7a193;
+  --line: #e2dccd;
+  --line-soft: #ebe6d8;
+  --line-strong: #cec7b4;
+  --accent: #2f6b57;
+  --on-accent: #fbfaf5;
+  --accent-2: #3d8a6f;
+  --accent-soft: #e4efe8;
+  --accent-wash: #f1f6f2;
+  --ok: #2f7d5c;
+  --ok-soft: #e2f0e8;
+  --warn: #9c6516;
+  --warn-soft: #f7eeda;
+  --danger: #a8412f;
+  --code-bg: #f7f3e8;
+  --grid-line: rgba(47, 107, 87, 0.09);
+  --grid-line-strong: rgba(47, 107, 87, 0.17);
+  --node-face: #fdfbf5;
+  --node-side: #f4efe3;
+  --flow-line: #b9c6b4;
+  --flow-arrow: #7d9683;
+  --logo-face: #dfe7dd;
+  --logo-side: #eef1e8;
+  --shadow-sm: 0 1px 2px rgba(70, 58, 34, 0.05);
+  --shadow-md: 0 18px 44px rgba(70, 58, 34, 0.13);
+  --scrim: rgba(32, 27, 18, 0.42);
+  --viz-1: #2f6b57;
+  --viz-2: #b06a2c;
+  --viz-3: #5b6f9c;
+  --tone-good: #2f7d5c;
+  --tone-good-soft: #e2f0e8;
+  --tone-warn: #9c6516;
+  --tone-warn-soft: #f7eeda;
+  --tone-bad: #a8412f;
+  --tone-bad-soft: #f9e9e5;
+  --tone-key: #2f6b57;
+  --tone-key-soft: #e4efe8;
+  --tone-violet: #6b5b9c;
+  --tone-violet-soft: #ece8f4;
+  --tone-teal: #23706f;
+  --tone-teal-soft: #e0eeed;
+  --bg-glow:
+    radial-gradient(1100px 560px at 14% -10%, rgba(255, 255, 255, 0.85), transparent 62%),
+    radial-gradient(820px 460px at 92% -6%, rgba(47, 107, 87, 0.07), transparent 64%);
+}
+
+html[data-palette='a'][data-theme='dark'] {
+  --bg: #171813;
+  --panel: #201f19;
+  --panel-soft: #1c1b16;
+  --panel-tint: #25231b;
+  --ink: #eae4d5;
+  --ink-soft: #c6bfae;
+  --muted: #948d7b;
+  --faint: #6f6959;
+  --line: #322e24;
+  --line-soft: #29261e;
+  --line-strong: #453f31;
+  --accent: #7cc6a4;
+  --on-accent: #12211a;
+  --accent-2: #96d6b8;
+  --accent-soft: #1d2f27;
+  --accent-wash: #172420;
+  --ok: #6fd0a4;
+  --ok-soft: #12301f;
+  --warn: #dfae62;
+  --warn-soft: #2c2213;
+  --danger: #e5887a;
+  --code-bg: #1b1a15;
+  --grid-line: rgba(124, 198, 164, 0.10);
+  --grid-line-strong: rgba(124, 198, 164, 0.18);
+  --node-face: #201f19;
+  --node-side: #24221b;
+  --flow-line: #33453a;
+  --flow-arrow: #4f6f5c;
+  --logo-face: #24322a;
+  --logo-side: #1d2722;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.34);
+  --shadow-md: 0 18px 44px rgba(0, 0, 0, 0.58);
+  --scrim: rgba(8, 8, 5, 0.66);
+  --viz-1: #7cc6a4;
+  --viz-2: #dfae62;
+  --viz-3: #9aa9d6;
+  --tone-good: #6fd0a4;
+  --tone-good-soft: #12301f;
+  --tone-warn: #dfae62;
+  --tone-warn-soft: #2c2213;
+  --tone-bad: #e5887a;
+  --tone-bad-soft: #331b18;
+  --tone-key: #7cc6a4;
+  --tone-key-soft: #17302a;
+  --tone-violet: #b0a0e0;
+  --tone-violet-soft: #221f36;
+  --tone-teal: #6fd0cd;
+  --tone-teal-soft: #102b2b;
+  --bg-glow:
+    radial-gradient(1000px 520px at 12% -10%, rgba(140, 200, 170, 0.06), transparent 60%);
+}
+
+/* ---------- B 暖灯·琥珀（暖灰夜色 / 夜晚盯屏最省眼） ---------- */
+
+html[data-palette='b'] {
+  --bg: #f8f4ec;
+  --panel: #fffdf8;
+  --panel-soft: #faf6ee;
+  --panel-tint: #f3ece0;
+  --ink: #2a251d;
+  --ink-soft: #524b3f;
+  --muted: #857c6b;
+  --faint: #b0a794;
+  --line: #e7dfd0;
+  --line-soft: #efe9dd;
+  --line-strong: #d3c9b6;
+  --accent: #b5651d;
+  --on-accent: #fffdf8;
+  --accent-2: #cf7d33;
+  --accent-soft: #f8ecdf;
+  --accent-wash: #fbf4ea;
+  --ok: #3f7d52;
+  --ok-soft: #e6f0e6;
+  --warn: #a8651b;
+  --warn-soft: #f9eeda;
+  --danger: #ad4032;
+  --code-bg: #f9f4ea;
+  --grid-line: rgba(181, 101, 29, 0.09);
+  --grid-line-strong: rgba(181, 101, 29, 0.17);
+  --node-face: #fffdf8;
+  --node-side: #f6efe2;
+  --flow-line: #c9b89e;
+  --flow-arrow: #a08a6b;
+  --logo-face: #ecdcc7;
+  --logo-side: #f4ead9;
+  --shadow-sm: 0 1px 2px rgba(74, 56, 32, 0.05);
+  --shadow-md: 0 18px 44px rgba(74, 56, 32, 0.13);
+  --scrim: rgba(34, 26, 16, 0.44);
+  --viz-1: #b5651d;
+  --viz-2: #3f7d6a;
+  --viz-3: #7a5f9e;
+  --tone-good: #3f7d52;
+  --tone-good-soft: #e6f0e6;
+  --tone-warn: #a8651b;
+  --tone-warn-soft: #f9eeda;
+  --tone-bad: #ad4032;
+  --tone-bad-soft: #f9e7e3;
+  --tone-key: #b5651d;
+  --tone-key-soft: #f8ecdf;
+  --tone-violet: #7a5f9e;
+  --tone-violet-soft: #efe9f5;
+  --tone-teal: #2f7a72;
+  --tone-teal-soft: #e2f0ee;
+  --bg-glow:
+    radial-gradient(1100px 560px at 12% -12%, rgba(255, 252, 244, 0.9), transparent 60%),
+    radial-gradient(800px 440px at 94% -8%, rgba(181, 101, 29, 0.08), transparent 62%);
+}
+
+html[data-palette='b'][data-theme='dark'] {
+  --bg: #191815;
+  --panel: #211f1b;
+  --panel-soft: #1d1c18;
+  --panel-tint: #27241e;
+  --ink: #f0e9db;
+  --ink-soft: #cec6b6;
+  --muted: #9b9280;
+  --faint: #756e5e;
+  --line: #332f27;
+  --line-soft: #2a2720;
+  --line-strong: #474034;
+  --accent: #e8a75c;
+  --on-accent: #1d1608;
+  --accent-2: #f2c07e;
+  --accent-soft: #33281a;
+  --accent-wash: #251e15;
+  --ok: #86cfa8;
+  --ok-soft: #14301f;
+  --warn: #e8a75c;
+  --warn-soft: #322413;
+  --danger: #e58272;
+  --code-bg: #1b1915;
+  --grid-line: rgba(232, 167, 92, 0.10);
+  --grid-line-strong: rgba(232, 167, 92, 0.19);
+  --node-face: #211f1b;
+  --node-side: #26231d;
+  --flow-line: #4a4032;
+  --flow-arrow: #74624a;
+  --logo-face: #302619;
+  --logo-side: #251f16;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.36);
+  --shadow-md: 0 18px 44px rgba(0, 0, 0, 0.6);
+  --scrim: rgba(9, 7, 4, 0.68);
+  --viz-1: #e8a75c;
+  --viz-2: #86cfa8;
+  --viz-3: #a99be0;
+  --tone-good: #86cfa8;
+  --tone-good-soft: #14301f;
+  --tone-warn: #e8a75c;
+  --tone-warn-soft: #322413;
+  --tone-bad: #e58272;
+  --tone-bad-soft: #341a17;
+  --tone-key: #e8a75c;
+  --tone-key-soft: #33281a;
+  --tone-violet: #b9a8ec;
+  --tone-violet-soft: #241f38;
+  --tone-teal: #6fd0c6;
+  --tone-teal-soft: #113029;
+  --bg-glow:
+    radial-gradient(1000px 520px at 14% -12%, rgba(240, 180, 110, 0.055), transparent 60%);
+}
+
+/* ---------- C 晨雾·靛紫（柔和渐层 / 视觉最抓人） ---------- */
+
+html[data-palette='c'] {
+  --bg: #f4f2fb;
+  --panel: #fefdff;
+  --panel-soft: #f8f6fd;
+  --panel-tint: #f1eefb;
+  --ink: #262238;
+  --ink-soft: #4e4866;
+  --muted: #857ea0;
+  --faint: #ada7c2;
+  --line: #e3dff1;
+  --line-soft: #ece9f6;
+  --line-strong: #cfc9e4;
+  --accent: #5b4bd6;
+  --on-accent: #ffffff;
+  --accent-2: #7566e8;
+  --accent-soft: #ece9fb;
+  --accent-wash: #f4f2fd;
+  --ok: #2f8a68;
+  --ok-soft: #e4f2ea;
+  --warn: #c07a1e;
+  --warn-soft: #fbf0dc;
+  --danger: #b4443c;
+  --code-bg: #f8f6fd;
+  --grid-line: rgba(91, 75, 214, 0.09);
+  --grid-line-strong: rgba(91, 75, 214, 0.16);
+  --node-face: #fefdff;
+  --node-side: #f4f1fc;
+  --flow-line: #c6bfe6;
+  --flow-arrow: #9a90c9;
+  --logo-face: #e4dffa;
+  --logo-side: #f0edfc;
+  --shadow-sm: 0 1px 2px rgba(54, 44, 96, 0.05);
+  --shadow-md: 0 18px 44px rgba(54, 44, 96, 0.14);
+  --scrim: rgba(26, 20, 48, 0.42);
+  --viz-1: #5b4bd6;
+  --viz-2: #e8795a;
+  --viz-3: #2f8a79;
+  --tone-good: #2f8a68;
+  --tone-good-soft: #e4f2ea;
+  --tone-warn: #c07a1e;
+  --tone-warn-soft: #fbf0dc;
+  --tone-bad: #b4443c;
+  --tone-bad-soft: #fae9e7;
+  --tone-key: #5b4bd6;
+  --tone-key-soft: #ece9fb;
+  --tone-violet: #8b5cd6;
+  --tone-violet-soft: #f2ebfb;
+  --tone-teal: #2f8a79;
+  --tone-teal-soft: #e2f2ef;
+  --bg-glow:
+    radial-gradient(1000px 540px at 10% -12%, rgba(255, 255, 255, 0.9), transparent 58%),
+    radial-gradient(760px 420px at 92% -6%, rgba(123, 104, 238, 0.10), transparent 60%),
+    radial-gradient(700px 420px at 78% 104%, rgba(232, 121, 90, 0.09), transparent 62%);
+}
+
+html[data-palette='c'][data-theme='dark'] {
+  --bg: #12111a;
+  --panel: #1a1824;
+  --panel-soft: #17151f;
+  --panel-tint: #201d2c;
+  --ink: #e8e4f4;
+  --ink-soft: #c3bdd8;
+  --muted: #8d86a6;
+  --faint: #6a6482;
+  --line: #2c2839;
+  --line-soft: #241f2f;
+  --line-strong: #3d3750;
+  --accent: #a99bf5;
+  --on-accent: #14101f;
+  --accent-2: #bfb4ff;
+  --accent-soft: #241f3a;
+  --accent-wash: #1b1729;
+  --ok: #6fd0a4;
+  --ok-soft: #12301f;
+  --warn: #e0b06a;
+  --warn-soft: #2f2413;
+  --danger: #e5887a;
+  --code-bg: #16141f;
+  --grid-line: rgba(169, 155, 245, 0.10);
+  --grid-line-strong: rgba(169, 155, 245, 0.18);
+  --node-face: #1a1824;
+  --node-side: #201d2b;
+  --flow-line: #3a3350;
+  --flow-arrow: #5b5178;
+  --logo-face: #251f3d;
+  --logo-side: #1c1830;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.34);
+  --shadow-md: 0 18px 44px rgba(0, 0, 0, 0.58);
+  --scrim: rgba(7, 5, 14, 0.68);
+  --viz-1: #a99bf5;
+  --viz-2: #f0997f;
+  --viz-3: #6fd0b6;
+  --tone-good: #6fd0a4;
+  --tone-good-soft: #12301f;
+  --tone-warn: #e0b06a;
+  --tone-warn-soft: #2f2413;
+  --tone-bad: #e5887a;
+  --tone-bad-soft: #341b18;
+  --tone-key: #a99bf5;
+  --tone-key-soft: #241f3a;
+  --tone-violet: #c0adf8;
+  --tone-violet-soft: #251f3c;
+  --tone-teal: #6fd0c6;
+  --tone-teal-soft: #112e2c;
+  --bg-glow:
+    radial-gradient(1000px 540px at 10% -12%, rgba(169, 155, 245, 0.07), transparent 58%),
+    radial-gradient(700px 420px at 88% 106%, rgba(240, 153, 127, 0.05), transparent 62%);
+}
+
+/* 配色切换按钮（临时：定稿后可移除） */
+.scheme-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 10px;
+  background: var(--panel-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-ctl);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.scheme-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+
+.scheme-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.scheme-a {
+  background: #2f6b57;
+}
+
+.scheme-b {
+  background: #c2703a;
+}
+
+.scheme-c {
+  background: #5b4bd6;
+}
+
+.scheme-code {
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  font-family: var(--mono);
+}
+
+/* 切换配色 / 主题时的柔和过渡，避免生硬闪切 */
+.app-shell,
+.topbar,
+.sidebar,
+.overview,
+.canvas-card,
+.step-card,
+.step-item,
+.icon-btn,
+.btn {
+  transition:
+    background-color 0.28s ease,
+    border-color 0.28s ease,
+    color 0.28s ease;
 }

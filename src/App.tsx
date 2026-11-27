@@ -18,6 +18,24 @@ import type { Tab } from './data/types'
 
 const PROGRESS_KEY = 'data-explorer:progress:v1'
 const THEME_KEY = 'data-explorer:theme:v1'
+const SCHEME_KEY = 'data-explorer:scheme:v1'
+
+export type Scheme = 'a' | 'b' | 'c'
+
+export const SCHEME_NAME: Record<Scheme, string> = {
+  a: '宣纸墨绿',
+  b: '暖灯琥珀',
+  c: '晨雾靛紫',
+}
+
+function loadScheme(): Scheme {
+  try {
+    const raw = localStorage.getItem(SCHEME_KEY)
+    return raw === 'a' || raw === 'c' ? raw : 'b'
+  } catch {
+    return 'b'
+  }
+}
 
 function loadProgress(): Record<string, true> {
   try {
@@ -44,6 +62,7 @@ export default function App() {
   const [stepIndex, setStepIndex] = useState(0)
   const [completed, setCompleted] = useState<Record<string, true>>(loadProgress)
   const [theme, setTheme] = useState<'light' | 'dark'>(loadTheme)
+  const [scheme, setScheme] = useState<Scheme>(loadScheme)
   const [tab, setTab] = useState<Tab>('snapshot')
   const [playing, setPlaying] = useState(false)
   const [speed, setSpeed] = useState(1)
@@ -70,6 +89,15 @@ export default function App() {
       /* ignore */
     }
   }, [theme])
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-palette', scheme)
+    try {
+      localStorage.setItem(SCHEME_KEY, scheme)
+    } catch {
+      /* ignore */
+    }
+  }, [scheme])
 
   useEffect(() => {
     try {
@@ -230,6 +258,8 @@ export default function App() {
         completedCount={completedCount}
         totalSteps={totalSteps}
         theme={theme}
+        scheme={scheme}
+        onCycleScheme={() => setScheme(scheme === 'a' ? 'b' : scheme === 'b' ? 'c' : 'a')}
         onSearch={() => setPaletteOpen(true)}
         onToggleTheme={() => setTheme(theme === 'light' ? 'dark' : 'light')}
         onMenu={() => setSidebarOpen(true)}

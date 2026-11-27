@@ -9,9 +9,18 @@ interface Props {
   completedCount: number
   totalSteps: number
   theme: 'light' | 'dark'
+  scheme: 'a' | 'b' | 'c'
+  onCycleScheme: () => void
   onSearch: () => void
   onToggleTheme: () => void
   onMenu: () => void
+}
+
+// 配色方案：同一套版式，三种气质
+const SCHEME_LABEL: Record<'a' | 'b' | 'c', string> = {
+  a: '宣纸墨绿',
+  b: '暖灯琥珀',
+  c: '晨雾靛紫',
 }
 
 export default function Header({
@@ -20,6 +29,8 @@ export default function Header({
   completedCount,
   totalSteps,
   theme,
+  scheme,
+  onCycleScheme,
   onSearch,
   onToggleTheme,
   onMenu,
@@ -96,6 +107,16 @@ export default function Header({
             {completedCount} / {totalSteps} 步已完成
           </div>
         </div>
+
+        <button
+          className="scheme-btn"
+          onClick={onCycleScheme}
+          aria-label={`配色：${SCHEME_LABEL[scheme]}，点击切换`}
+          title={`配色：${SCHEME_LABEL[scheme]}（点击切换）`}
+        >
+          <span className={`scheme-dot scheme-${scheme}`} />
+          <span className="scheme-code">{scheme.toUpperCase()}</span>
+        </button>
 
         <button
           className="icon-btn"
